@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Document Desk</title>
+<meta name="description" content="Convert, summarize, and compress documents — entirely in your browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@500&family=Source+Sans+3:wght@400;600&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <h1>Document Desk</h1>
+    <p>Convert, summarize, and shrink documents. Everything runs on this device — nothing is uploaded anywhere.</p>
+    <nav class="tabs">
+      <button class="tab active" id="tab-convert" type="button">Convert</button>
+      <button class="tab" id="tab-summarize" type="button">Summarize</button>
+      <button class="tab" id="tab-compress" type="button">Compress</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ CONVERT ============ -->
+  <section class="panel" id="panel-convert">
+    <div class="card">
+      <h2>1. Choose a file</h2>
+      <div class="dropzone" id="convert-drop">
+        <div class="dz-title">Drop a file here, or click to browse</div>
+        <div class="dz-sub">PDF, Word (.docx), text, Markdown, CSV, Excel, or an image</div>
+      </div>
+      <input type="file" id="convert-input" hidden
+             accept=".pdf,.docx,.txt,.md,.csv,.xlsx,.png,.jpg,.jpeg,.webp">
+
+      <div class="file-info" id="convert-fileinfo" hidden>
+        <span class="tag">FILE</span>
+        <span class="fname" id="convert-filename"></span>
+        <span class="fsize" id="convert-filesize"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>2. Pick an output format</h2>
+      <div class="row">
+        <label for="convert-output">Convert to</label>
+        <select id="convert-output"></select>
+      </div>
+      <button class="btn-primary" id="convert-run" disabled>Convert</button>
+      <div class="status" id="convert-status"></div>
+
+      <div class="result" id="convert-result" hidden>
+        <div class="result-row">
+          <span class="tag">OUTPUT</span>
+          <span class="fname" id="convert-result-name"></span>
+          <span class="fsize" id="convert-result-size"></span>
+          <button class="btn-secondary" id="convert-download" style="margin-left:auto">Download</button>
+        </div>
+        <div class="result-note" id="convert-result-note" hidden></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>What to expect</h2>
+      <p class="method-note" style="border:none;margin:0;padding:0">
+        This reconstructs documents from their content rather than copying pixels, so layout
+        won't be pixel-identical to the source — headings, paragraphs, and tables carry over;
+        exact fonts, colors, and positioning don't. Table detection inside PDFs is pattern-based
+        and works best on documents with clear column alignment. Images embedded in a source
+        document aren't currently re-embedded into a Word output.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ SUMMARIZE ============ -->
+  <section class="panel" id="panel-summarize" hidden>
+    <div class="card">
+      <h2>1. Choose a document</h2>
+      <div class="dropzone" id="summarize-drop">
+        <div class="dz-title">Drop a file here, or click to browse</div>
+        <div class="dz-sub">PDF, Word (.docx), text, or Markdown</div>
+      </div>
+      <input type="file" id="summarize-input" hidden accept=".pdf,.docx,.txt,.md">
+
+      <div class="file-info" id="summarize-fileinfo" hidden>
+        <span class="tag">FILE</span>
+        <span class="fname" id="summarize-filename"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>2. Choose a length</h2>
+      <div class="row">
+        <label for="summarize-length">Summary length</label>
+        <select id="summarize-length">
+          <option value="0.15">Brief — key points only</option>
+          <option value="0.3" selected>Standard</option>
+          <option value="0.5">Detailed</option>
+        </select>
+      </div>
+      <button class="btn-primary" id="summarize-run" disabled>Summarize</button>
+      <div class="status" id="summarize-status"></div>
+
+      <div class="result" id="summarize-result" hidden>
+        <div class="stats-line" id="summarize-stats"></div>
+        <div class="kw-row" id="summarize-keywords"></div>
+        <div class="summary-text" id="summarize-text"></div>
+
+        <div class="row" style="margin-top:1rem">
+          <label for="summarize-export-format">Export summary as</label>
+          <select id="summarize-export-format">
+            <option value="txt">Plain text</option>
+            <option value="md">Markdown</option>
+            <option value="docx">Word (.docx)</option>
+            <option value="pdf">PDF</option>
+          </select>
+          <button class="btn-secondary" id="summarize-export">Download</button>
+        </div>
+
+        <p class="method-note">
+          This is an <strong>extractive</strong> summary: it selects your document's most
+          information-dense existing sentences by word-frequency scoring, and returns them
+          unchanged and in original order. It does not paraphrase, does not verify facts, and
+          has no understanding of meaning — treat it as a fast way to surface likely-important
+          sentences, not a substitute for reading anything where precision matters.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COMPRESS ============ -->
+  <section class="panel" id="panel-compress" hidden>
+    <div class="card">
+      <h2>1. Choose a file</h2>
+      <div class="dropzone" id="compress-drop">
+        <div class="dz-title">Drop a file here, or click to browse</div>
+        <div class="dz-sub">An image (PNG/JPG) or a PDF</div>
+      </div>
+      <input type="file" id="compress-input" hidden accept=".pdf,.png,.jpg,.jpeg,.webp">
+
+      <div class="file-info" id="compress-fileinfo" hidden>
+        <span class="tag">FILE</span>
+        <span class="fname" id="compress-filename"></span>
+        <span class="fsize" id="compress-filesize-before"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>2. Settings</h2>
+
+      <div id="compress-image-options" hidden>
+        <div class="row">
+          <label for="compress-image-format">Format</label>
+          <select id="compress-image-format">
+            <option value="image/jpeg">JPEG (smaller, no transparency)</option>
+            <option value="image/png">PNG (lossless, larger)</option>
+          </select>
+        </div>
+        <div class="row">
+          <label for="compress-image-quality">Quality</label>
+          <input type="range" id="compress-image-quality" min="0.3" max="0.95" step="0.05" value="0.75" data-suffix="">
+          <span class="range-value" id="compress-image-quality-value"></span>
+        </div>
+        <div class="row">
+          <label for="compress-image-scale">Scale</label>
+          <input type="range" id="compress-image-scale" min="0.25" max="1" step="0.05" value="1" data-suffix="x">
+          <span class="range-value" id="compress-image-scale-value"></span>
+        </div>
+      </div>
+
+      <div id="compress-pdf-options" hidden>
+        <div class="row">
+          <label>Mode</label>
+          <div class="radio-group">
+            <label><input type="radio" name="pdf-compress-mode" value="balanced" checked> Balanced (keeps text selectable)</label>
+            <label><input type="radio" name="pdf-compress-mode" value="maximum"> Maximum (flattens to images)</label>
+          </div>
+        </div>
+
+        <div class="warning-box" id="compress-maximum-warning" hidden>
+          Maximum mode turns every page into a picture of that page. Text will no longer be
+          selectable, searchable, or copyable, and small print may blur. Use this only for
+          scanned or image-heavy PDFs where file size matters more than that.
+        </div>
+
+        <div id="compress-maximum-options" hidden>
+          <div class="row">
+            <label for="compress-pdf-quality">Image quality</label>
+            <input type="range" id="compress-pdf-quality" min="0.3" max="0.9" step="0.05" value="0.6">
+            <span class="range-value" id="compress-pdf-quality-value"></span>
+          </div>
+          <div class="row">
+            <label for="compress-pdf-scale">Resolution</label>
+            <input type="range" id="compress-pdf-scale" min="0.8" max="2" step="0.1" value="1.3" data-suffix="x">
+            <span class="range-value" id="compress-pdf-scale-value"></span>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="compress-run" disabled>Compress</button>
+      <div class="status" id="compress-status"></div>
+
+      <div class="result" id="compress-result" hidden>
+        <div class="compress-diff">
+          <span id="compress-filesize-before-2"></span>
+          <span class="arrow">&rarr;</span>
+          <span id="compress-filesize-after"></span>
+          <span class="pct" id="compress-result-pct"></span>
+        </div>
+        <div class="warning-box" id="compress-grow-warning" hidden></div>
+        <div style="margin-top:0.9rem">
+          <button class="btn-secondary" id="compress-download">Download</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Runs locally in your browser. Files are never uploaded or transmitted anywhere.</footer>
+
+<script src="vendor/pdf.js"></script>
+<script src="vendor/pdf-lib.min.js"></script>
+<script src="vendor/mammoth.min.js"></script>
+<script src="vendor/xlsx.full.min.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
